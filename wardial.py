@@ -174,14 +174,12 @@ print('dprk_ips_with_servers=', dprk_ips_with_servers)
 
 ########################################
 # FIXME 3:
-# Create a new repo on github.
-# The repo must have:
+# Complete the repository you created from the course template.
+# Follow the submission checklist on the course assignment page:
 # 1. Your modified python code
-# 2. A github action that runs the test cases
-# 3. a README.md file that has:
+# 2. a README.md file that has:
 #    1. a brief 1 sentence explanation of what your project does.
-#    2. a badge showing the test cases pass
-#    3. all IP addresses that host web servers in the DPRK
+#    2. all IP addresses that host web servers in the DPRK
 #       you must format this output as a codeblock that shows the terminal command that you ran and its output
 #       that is, something like:
 #       ```
