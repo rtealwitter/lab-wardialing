@@ -1,23 +1,11 @@
 '''
-This is a lab for CSCI040.
-Complete the lab by fixing the FIXME annotations below.
+Starter functions for the War Dialing lab.
+Assignment instructions: https://csci40.rtealwitter.com/topics/09_syntactic_sugar/lab.html
 '''
 
 import requests
 
-########################################
-# FIXME 0:
-# Implement the following functions so that the test cases pass.
-#
-# NOTE:
-# In your next FIXMEs, you will use these functions to do the wardial.
-# All good programmers, whenever they are solving any "concrete" task like wardialing,
-# will break that task into smaller functions.
-# These functions can then be worked on individually,
-# and we can check if they are working using the test cases.
-# Then, once we are confident the small functions work,
-# we put them together to accomplish our original task.
-########################################
+# Complete each function using its contract and doctests.
 
 def is_server_at_hostname(hostname):
     '''
@@ -28,57 +16,24 @@ def is_server_at_hostname(hostname):
     The input hostname will not contain a scheme,
     and you will have to add it.
 
-    # Test cases for code that works with the internet are hard to write.
-    # The are "nondeterministic" because the output of the test case depends not only on your code being correct,
-    # but also on the webpages working correctly.
-    # These test cases use google and facebook, which are almost certainly going to be online.
-    # But if these webpages go down (or you're not connected to the internet),
-    # then the test cases will fail even if your code is correct.
-    >>> is_server_at_hostname('google.com')
-    True
-    >>> is_server_at_hostname('www.google.com')
-    True
-    >>> is_server_at_hostname('GoOgLe.CoM')
-    True
-    >>> is_server_at_hostname('142.250.68.110')  # IP address for google.com
-    True
+    These examples replace the network request with predictable outcomes.
+    They work without internet access and restore requests.get after each test.
 
-    >>> is_server_at_hostname('facebook.com')
+    >>> from unittest.mock import patch
+    >>> with patch('requests.get', return_value=object()):
+    ...     is_server_at_hostname('online.test')
     True
-    >>> is_server_at_hostname('www.facebook.com')
-    True
-    >>> is_server_at_hostname('FACEBOOK.com')
-    True
-
-    # These test cases below use made up hostnames and so should always pass
-    # (i.e. your function will always return `False`)
-    # even when the internet isn't working.
-    >>> is_server_at_hostname('google.commmm')
+    >>> with patch('requests.get', side_effect=requests.ConnectionError):
+    ...     is_server_at_hostname('offline.test')
     False
-    >>> is_server_at_hostname('aslkdjlaksjdlaksjdlakj')
-    False
-    >>> is_server_at_hostname('142.250.68.110.1.3.4.5')
-    False
-    >>> is_server_at_hostname('8.8.8.8')
+    >>> with patch('requests.get', side_effect=requests.Timeout):
+    ...     is_server_at_hostname('slow.test')
     False
 
-    HINT:
-    Your test cases may take a LONG time to run when they can't connect to a webserver.
-    This is because by default, the requests library will wait for a long time (minutes) for a server response.
-    You should shorten that time to something more reasonable.
-    Review the requests documentation to see how to speed up these calls and make your function faster:
-    <https://requests.readthedocs.io/en/latest/user/quickstart/#timeouts>
-    
-    Requests does not set a short timeout because the optimal value to use is application dependent.
-    When connecting to a highly reliable service like google,
-    1 second would be a sufficient timeout.
-    (Anything longer than 1 second probably means there is an error in your internet connection and not an error at google.)
-    But for our application, we will be connecting to servers far away in a country known for unreliable internet.
-    I recommend setting a timeout of 5 seconds.
-    A longer timeout would ensure that we don't miss any "slow" servers,
-    but it would also make scanning take much longer.
-    5 seconds is a reasonable tradeoff between these extremes.
+    Pass timeout=5 to requests.get. Any HTTP response, including 403 or 404,
+    means a server replied. Return False for connection errors and timeouts.
     '''
+
 
 
 def increment_ip(ip):
@@ -130,75 +85,11 @@ def enumerate_ips(start_ip, n):
     '''
 
 
-########################################
-# FIXME 1:
-# Create a list of all the IP addresses assigned to the DPRK.
-# Recall that the DPRK is assigned all IP addresses in the range from `175.45.176.0` to `175.45.179.255` (1024 IPs in total).
-# You should use your `enumerate_ips` function that you created above.
-########################################
-dprk_ips = []
+if __name__ == '__main__':
+    # FIXME 1: use enumerate_ips to generate 1024 addresses from 175.45.176.0.
+    dprk_ips = []
 
-
-########################################
-# FIXME 2:
-# Filter the `dprk_ips` list you created above so that it contains only the IPs that have a web server.
-# Use the accumulator pattern and your `is_server_at_hostname` function.
-#
-# HINT:
-# Your for loop will take a LONG time to run.
-# There are 1024 IPs that you must scan,
-# and you're waiting up to 5 seconds for each.
-# That means you're code will take up to 1024*5/60 = 85 minutes to run.
-# You should output some debugging messages to let you know which ip address you are currently scanning.
-# Also, if you haven't watched the WarGames movie yet,
-# I recommend watching it while you're code is running :)
-#
-# In "real" war dialing code,
-# all of these connections are done in parallel,
-# and so the scan of all 1024 IPs can be completed in just seconds.
-# An ordinary laptop and internet connection can scan the entire internet (4.2 billion IPs) in under an hour.
-# Parallel programming is quite hard, however,
-# so we're just doing the slow and sequential version in this lab.
-# If you go on to take the CS46 class (data structures) next semester,
-# you'll learn how to write this parallel code.
-########################################
-dprk_ips_with_servers = []
-
-
-########################################
-# Once you've completed the tasks above,
-# the following code should output the list of IP addresses.
-# You don't have to modify anything here.
-########################################
-print('dprk_ips_with_servers=', dprk_ips_with_servers)
-
-########################################
-# FIXME 3:
-# Complete the repository you created from the course template.
-# Follow the submission checklist on the course assignment page:
-# 1. Your modified python code
-# 2. a README.md file that has:
-#    1. a brief 1 sentence explanation of what your project does.
-#    2. all IP addresses that host web servers in the DPRK
-#       you must format this output as a codeblock that shows the terminal command that you ran and its output
-#       that is, something like:
-#       ```
-#       $ python3 wardial.py
-#       ip1
-#       ip2
-#       ip3
-#       ```
-#
-# NOTE:
-# The code from FIXME 1 and 2 is "top level" (i.e. has no indents).
-# That means it will always be run.
-# You do not want this code to run when your doctests are running, however,
-# because this code takes a long time to run and the doctests need to finish quickly.
-# You should put this top level code inside an if statement that looks like
-# ```
-# if __name__ == '__main__':
-# ```
-# This will ensure that the code only gets run when the file is run as a script;
-# the code will not be run when the file is run as doctests.
-########################################
-
+    # FIXME 2: keep addresses for which is_server_at_hostname returns True.
+    # Run this block through `python3 offline_scan.py` while developing.
+    dprk_ips_with_servers = []
+    print('dprk_ips_with_servers=', dprk_ips_with_servers)
